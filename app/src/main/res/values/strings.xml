@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">PcWorld</string>
+    <string name="login_text">Login</string>
+    <string name="password_text">Password</string>
+    <string name="name_text">Name</string>
+    <string name="money_text">Money</string>
+    <string name="submit_text">Enter</string>
+    <string name="register_text">Register</string>
+    <string name="error_login_text">Username or password invalid!</string>
+    <string name="correct_login_text">Welcome!</string>
+    <string name="logout_text">Log out</string>
+    <string name="load_money_text">Load Money</string>
+    <string name="logout_title_text">Log out?</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="correct_register">Correct register</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="add_car_txt">Add product?</string>
+    <string name="add_product_txt">Add</string>
+    <string name="cancel_product_txt">Cancel</string>
+    <string name="buy_car_text">Buy car</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

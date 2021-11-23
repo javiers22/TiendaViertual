@@ -1,17 +1,26 @@
 package com.javier.pcworld;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.content.AsyncTaskLoader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import com.javier.pcworld.room_database.Register;
 import com.javier.pcworld.room_database.RegisterLab;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.List;
 
@@ -23,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText name;
     RegisterLab mRegisterLab;
     Register mRegister;
+    Object resultString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
     public void funRegister(View view)
     {
         /*consumir api rest para registro del usuario*/
+        SegundoPlano tarea=new SegundoPlano();
+        tarea.execute();
+        /*fin*/
         String loginTmp=login.getText().toString();
         String passwordTmp=password.getText().toString();
         String moneyTmp=money.getText().toString();
@@ -92,5 +105,51 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         dialog.create().show();
+    }
+
+    private class SegundoPlano extends AsyncTask<Void, Void, Void>
+    {
+
+        @Override
+        protected void onPreExecute()
+        {
+
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            consumir();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            String mensaje="hola";
+        }
+    }
+
+    public void consumir()
+    {
+        String SOAP_ACTION="https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php/regiter_activity";
+        String METHOD_NAME="regiter_activity";
+        String NAMESPACE="https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php";
+        String URL="https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php";//webservice sin wsdl
+        try
+            {
+                SoapObject request=new SoapObject(NAMESPACE,METHOD_NAME);
+                request.addProperty("login",login.getText().toString());
+                request.addProperty("password",password.getText().toString());
+                request.addProperty("money",money.getText().toString());
+                request.addProperty("name",name.getText().toString());
+                SoapSerializationEnvelope soapEnvelope= new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                soapEnvelope.dotNet=true;
+                soapEnvelope.setOutputSoapObject(request);
+                HttpTransportSE transport=new HttpTransportSE(URL);
+                transport.call(SOAP_ACTION,soapEnvelope);
+                resultString=(Object)soapEnvelope.getResponse();
+            }
+        catch(Exception ex)
+            {
+                System.out.println(ex.getMessage()+" error consumiendo");
+            }
     }
 }

@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.room:room-common:2.3.0'
     implementation 'com.google.ar.sceneform:filament-android:1.17.1'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
+    implementation files('libs\\ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar')
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
 
     testImplementation 'junit:junit:4.+'

@@ -1,6 +1,7 @@
 package com.javier.pcworld;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
 import java.util.ArrayList;
 import java.util.EventListener;
 
@@ -24,6 +31,7 @@ public class ProductosListConfirmAdapter extends RecyclerView.Adapter<ProductosL
     ArrayList<String> cantidadProductos;
     ArrayList<String> idProductos;
     Button cofirm;
+    Object resultString;
 
     public ProductosListConfirmAdapter(AppCompatActivity context, Bundle info)
     {
@@ -60,6 +68,12 @@ public class ProductosListConfirmAdapter extends RecyclerView.Adapter<ProductosL
                 if(Integer.parseInt(Variables.user_money)>=suma)
                 {
                     /*Consumir api rest historia 10*/
+                    for(int i=0;i<Variables.id_products.size();i++)
+                    {
+                        Variables.id_product=Variables.id_products.get(i).get(0);
+                        SegundoPlano tarea = new SegundoPlano();
+                        tarea.execute();
+                    }
                     Toast.makeText(holder.itemView.getContext(), "Compra exitosa", Toast.LENGTH_LONG).show();
                     int dinero=Integer.parseInt(Variables.user_money)-suma;
                     Variables.user_money=String.valueOf(dinero);
@@ -128,6 +142,47 @@ public class ProductosListConfirmAdapter extends RecyclerView.Adapter<ProductosL
         public TextView getTextView2()
         {
             return textViewCantidad;
+        }
+    }
+
+
+    private class SegundoPlano extends AsyncTask<Void, Void, Void>
+    {
+
+        @Override
+        protected void onPreExecute()
+        {
+
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            consumir();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            String mensaje="hola";
+        }
+    }
+
+    public void consumir() {
+        String SOAP_ACTION = "https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php/productos_usuarios";
+        String METHOD_NAME = "productos_usuarios";
+        String NAMESPACE = "https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php";
+        String URL = "https://serviciostic.usantotomas.edu.co/servers/srv_tiendavirtual.php";//webservice sin wsdl
+        try {
+            SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+            request.addProperty("usuario_id", Variables.user_id);
+            request.addProperty("producto_id", Variables.id_product);
+            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            soapEnvelope.dotNet = true;
+            soapEnvelope.setOutputSoapObject(request);
+            HttpTransportSE transport = new HttpTransportSE(URL);
+            transport.call(SOAP_ACTION, soapEnvelope);
+            resultString = (Object) soapEnvelope.getResponse();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage()+" error consumiendo");
         }
     }
 

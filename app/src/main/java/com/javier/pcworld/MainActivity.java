@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             Variables.user_password=null;
                             Toast.makeText(this,getString(R.string.error_login_text),Toast.LENGTH_LONG).show();
                         }
+                        
                 }
                 catch (Exception e)
                 {
